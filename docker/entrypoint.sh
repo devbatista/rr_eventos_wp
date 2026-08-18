@@ -26,6 +26,15 @@ define('NONCE_SALT',       'put-your-unique-phrase-here');
 
 $table_prefix = getenv('WORDPRESS_TABLE_PREFIX') ?: 'wp_';
 
+// Set WordPress URLs to use HTTPS and detect the correct host
+if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+  $_SERVER['HTTPS'] = 'on';
+}
+if (!empty($_SERVER['HTTP_HOST'])) {
+  define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST']);
+  define('WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST']);
+}
+
 define('WP_DEBUG', false);
 
 if (! defined('ABSPATH')) {
