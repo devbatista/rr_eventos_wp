@@ -8,10 +8,10 @@ fi
 if [ ! -f /var/www/html/wp-config.php ]; then
   cat > /var/www/html/wp-config.php <<'PHP'
 <?php
-define('DB_NAME', getenv('WORDPRESS_DB_NAME') ?: 'wordpress');
-define('DB_USER', getenv('WORDPRESS_DB_USER') ?: 'wordpress');
-define('DB_PASSWORD', getenv('WORDPRESS_DB_PASSWORD') ?: 'wordpress_password');
-define('DB_HOST', getenv('WORDPRESS_DB_HOST') ?: 'mysql:3306');
+define('DB_NAME', getenv('MYSQLDATABASE') ?: getenv('WORDPRESS_DB_NAME') ?: 'wordpress');
+define('DB_USER', getenv('MYSQLUSER') ?: getenv('WORDPRESS_DB_USER') ?: 'wordpress');
+define('DB_PASSWORD', getenv('MYSQLPASSWORD') ?: getenv('WORDPRESS_DB_PASSWORD') ?: 'wordpress_password');
+define('DB_HOST', getenv('MYSQLHOST') ?: getenv('WORDPRESS_DB_HOST') ?: 'mysql:3306');
 define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
 
