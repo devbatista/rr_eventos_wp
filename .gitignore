@@ -2,3 +2,4 @@
 .env.local
 mysql_data/
 wordpress/
+.env
