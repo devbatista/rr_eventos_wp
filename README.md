@@ -1,6 +1,12 @@
 # RR Eventos WordPress
 
-Ambiente Docker com WordPress, MySQL e Nginx.
+Ambiente Docker com WordPress, MySQL, PHP-FPM, Nginx e Supervisor.
+
+## Imagem WordPress
+
+O servico `wordpress` usa o [Dockerfile](/Users/devbatista/dev/wp/rr_eventos/Dockerfile) local, baseado em `php:8.2-fpm-alpine`.
+
+Essa imagem instala Nginx e Supervisor no mesmo container da aplicacao.
 
 ## Subir o ambiente
 
