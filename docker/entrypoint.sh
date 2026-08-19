@@ -30,9 +30,18 @@ $table_prefix = getenv('WORDPRESS_TABLE_PREFIX') ?: 'wp_';
 if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
   $_SERVER['HTTPS'] = 'on';
 }
+
+// Set WordPress URLs to accept multiple domains
+$allowed_hosts = [
+  'rreventos-production.up.railway.app',
+  'admin.rubyrosemaquiagem.com.br'
+];
+
 if (!empty($_SERVER['HTTP_HOST'])) {
-  define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST']);
-  define('WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST']);
+  $host = $_SERVER['HTTP_HOST'];
+  // Use the actual host being accessed
+  define('WP_HOME', 'https://' . $host);
+  define('WP_SITEURL', 'https://' . $host);
 }
 
 define('WP_DEBUG', false);
