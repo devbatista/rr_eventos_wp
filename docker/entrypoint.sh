@@ -26,13 +26,17 @@ define('NONCE_SALT',       'put-your-unique-phrase-here');
 
 $table_prefix = getenv('WORDPRESS_TABLE_PREFIX') ?: 'wp_';
 
-// Set WordPress URLs to use HTTPS and detect the correct host
-if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+// Detect the correct protocol and host for local Docker and proxied deployments.
+$scheme = 'http';
+if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+  $scheme = $_SERVER['HTTP_X_FORWARDED_PROTO'];
+}
+if ($scheme === 'https') {
   $_SERVER['HTTPS'] = 'on';
 }
 if (!empty($_SERVER['HTTP_HOST'])) {
-  define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST']);
-  define('WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST']);
+  define('WP_HOME', $scheme . '://' . $_SERVER['HTTP_HOST']);
+  define('WP_SITEURL', $scheme . '://' . $_SERVER['HTTP_HOST']);
 }
 
 define('WP_DEBUG', false);

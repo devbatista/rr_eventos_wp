@@ -41,13 +41,12 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - wordpress:/var/www/html
+      - ./wordpress:/var/www/html
     networks:
       - rr_eventos
 
 volumes:
   mysql_data:
-  wordpress:
 
 networks:
   rr_eventos:
