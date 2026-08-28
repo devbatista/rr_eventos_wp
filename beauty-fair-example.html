@@ -32,14 +32,19 @@
          Tokens da marca
          ------------------------------------------------------------------
 
-         Cópia do :root de styles.css, que por sua vez transcreve
+         Vieram do :root de styles.css, que por sua vez transcreve
          app/assets/stylesheets/_brand.scss do rubyrose_eventos. Nenhum hex deve
-         aparecer fora deste bloco. */
+         aparecer fora deste bloco.
+
+         O rosa é a exceção e diverge de propósito: esta página usa o #e95374,
+         que é o mesmo do widget de credenciamento, e não o #f03a77 que a página
+         de manutenção usa. As duas peças aparecem lado a lado — o formulário
+         dentro desta página —, e é aqui que elas passam a falar a mesma cor. */
 
       :root {
         /* Paleta institucional */
-        --rr-pink: #f03a77;          /* Pantone 184 C — a cor da marca */
-        --rr-pink-ink: #cc3165;      /* mesmo rosa 15% mais escuro: 5,0:1, serve texto */
+        --rr-pink: #e95374;          /* a cor da marca nesta página */
+        --rr-pink-ink: #c64763;      /* mesmo rosa mais escuro: 4,7:1, serve texto */
         --rr-wine: #842046;          /* Pantone 7641 C */
 
         /* Neutros */
@@ -168,7 +173,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 1rem;
-        padding: 1.5rem clamp(1.25rem, 5vw, 3rem);
+        padding: 2.25rem clamp(1.25rem, 5vw, 3rem);
         background: var(--rr-pink);
         color: var(--rr-surface);
       }
@@ -211,12 +216,22 @@
        * formulário. */
       .hero {
         display: block;
+        padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 3rem);
       }
 
+      /* A imagem fica no tamanho em que foi exportada — 1280×650 — em vez de
+       * esticar até a largura da janela. Ampliar um PNG acima do tamanho de
+       * origem não inventa detalhe nenhum: só borra o texto que está pintado
+       * dentro dele.
+       *
+       * O `max-width` é o único desvio disso, e só para baixo: numa janela mais
+       * estreita que 1280 a imagem encolhe em vez de furar a página. */
       .hero__image {
         display: block;
-        width: 100%;
+        width: auto;
+        max-width: 100%;
         height: auto;
+        margin: 0 auto;
       }
 
       /* ------------------------------------------------------------------
@@ -756,11 +771,12 @@
 
     <style>
 
-      /* O widget nasceu com a própria paleta, e o rosa dele não é o rosa da
-       * marca — lado a lado com o cabeçalho e o rodapé, o botão sairia num tom
-       * mais apagado e pareceria defeito. Aqui os tokens dele passam a apontar
-       * para os do :root, que continuam sendo a única fonte de cor da página.
-       * Para conferir o widget com as cores originais, comente este bloco. */
+      /* O widget nasceu com a própria paleta. Ela e a da página coincidem hoje
+       * — foi o #e95374 dele que a página adotou —, então este bloco não muda
+       * mais nenhuma cor de lugar: ele existe para que a coincidência não
+       * dependa de sorte. Com os tokens apontando para o :root, mexer no rosa
+       * lá em cima leva junto o botão, o foco dos campos e a borda da
+       * credencial, em vez de deixá-los para trás. */
       #rr-accreditation {
         --rr-brand: var(--rr-pink);
         --rr-brand-ink: var(--rr-pink-ink);
@@ -813,7 +829,7 @@
       <a class="hero" href="#inscricao">
         <img class="hero__image" src="assets/banner-topo.png"
              alt="Viva a experiência Ruby Rose e Melu na Beauty Fair 2026 — lançamentos, ativações, influenciadores e um kit exclusivo esperam por você. Garantir vaga."
-             width="1920" height="800">
+             width="1280" height="650">
       </a>
 
       <!-- --------------------------------------------------------------
