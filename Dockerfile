@@ -1,4 +1,5 @@
-# Serve a página de manutenção e a página de exemplo da Beauty Fair.
+# Serve a página da Beauty Fair, que é a raiz do site, e guarda a página de
+# manutenção ao lado dela para quando precisar voltar ao ar.
 FROM nginx:1.27-alpine
 
 # O Railway descobre para qual porta encaminhar lendo o `EXPOSE` da imagem,
@@ -11,10 +12,13 @@ EXPOSE 80
 # então um template sobrescreveria o trabalho dele e derrubaria o roteamento.
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-COPY index.html styles.css script.js /usr/share/nginx/html/
+# A página da Beauty Fair é um arquivo só: o CSS e o JS dela moram dentro do
+# próprio HTML, então não há um par de arquivos para copiar junto.
+COPY index.html /usr/share/nginx/html/
 
-# A página de exemplo é um arquivo só — o CSS e o JS dela moram dentro do
-# próprio HTML, então não há mais nada para copiar junto além dos assets.
-COPY beauty-fair-example.html /usr/share/nginx/html/
+# A manutenção, dormente. Estes três andam juntos — o HTML dela é o único que
+# usa o styles.css e o script.js, e sem eles a página voltaria sem estilo e sem
+# a verificação que recarrega sozinha quando o site sobe.
+COPY index-manut.html styles.css script.js /usr/share/nginx/html/
 
 COPY assets/ /usr/share/nginx/html/assets/

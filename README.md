@@ -1,7 +1,8 @@
-# RR Eventos — página de manutenção
+# RR Eventos — https://eventos.rubyrosemaquiagem.com.br/
 
-Página estática que responde no lugar de https://eventos.rubyrosemaquiagem.com.br/
-enquanto o site está fora do ar.
+Site estático servido por Nginx. A raiz é a página da **Beauty Fair 2026**, com o
+formulário de credenciamento; a página de manutenção continua no repositório,
+dormente, para quando o site precisar sair do ar de novo.
 
 O ambiente Docker do WordPress que vivia neste repositório foi removido; o
 histórico do Git ainda o tem, se algum dia precisar.
@@ -9,18 +10,29 @@ histórico do Git ainda o tem, se algum dia precisar.
 ## Arquivos
 
 ```txt
-index.html                 o conteúdo
-styles.css                 identidade visual da Ruby Rose
-script.js                  verifica sozinho se o site voltou e recarrega
-beauty-fair-example.html   página da Beauty Fair 2026, para aprovação
-assets/                    logotipo, favicon, fontes e os banners
-Dockerfile                 Nginx servindo o diretório
-nginx.conf                 configuração do Nginx
+index.html         a página da Beauty Fair 2026 — a raiz do site
+index-manut.html   a página de manutenção, dormente
+styles.css         identidade visual — usada só pela manutenção
+script.js          verifica se o site voltou — usado só pela manutenção
+assets/            logotipo, sacola, favicon, fontes e os banners
+Dockerfile         Nginx servindo o diretório
+nginx.conf         configuração do Nginx
 ```
 
-O `beauty-fair-example.html` é um arquivo só: o CSS e o JS estão dentro dele,
-inclusive o widget de credenciamento que roda no Elementor. Ele não faz parte
-da manutenção — responde 200 num caminho próprio, ao lado dela.
+O `index.html` é um arquivo só: o CSS e o JS estão dentro dele, inclusive o
+widget de credenciamento que também roda no Elementor. Ele não usa o
+`styles.css` nem o `script.js` — esses dois pertencem à manutenção e andam com
+ela.
+
+## Voltar a página de manutenção
+
+O `nginx.conf` traz, no rodapé e comentado, o bloco que faz o domínio inteiro
+responder 503 com o `index-manut.html`. É substituir o `location /` por ele.
+
+Junto vão os três detalhes que custaram a ser descobertos — por que o status
+tem de ser 503 e não 200, por que o `styles.css` e o `script.js` precisam de
+`location` próprio, e por que o corpo do erro sai de um `location` nomeado.
+Vale ler antes de mexer.
 
 ## IPv6
 
@@ -41,34 +53,37 @@ Qualquer servidor estático serve para conferir o visual:
 python3 -m http.server 4173
 ```
 
-Para testar do jeito que vai para o ar, com o 503 e tudo:
+Para testar do jeito que vai para o ar:
 
 ```sh
-docker build -t rr-manutencao . && docker run --rm -p 8080:80 rr-manutencao
+docker build -t rr-site . && docker run --rm -p 8080:80 rr-site
 ```
 
-A manutenção fica em `http://localhost:8080/` e a página da Beauty Fair em
-`http://localhost:8080/beauty-fair-example.html`.
+A Beauty Fair fica em `http://localhost:8080/` e a manutenção em
+`http://localhost:8080/index-manut.html`.
 
-## O 503
+## O formulário
 
-A página responde **503 Service Unavailable**, e não 200. São dois motivos:
+O widget dentro do `index.html` fala com a API em `rubyroseeventos-production-…`
+para buscar as datas do evento e gravar o credenciamento. Sendo outra origem, o
+domínio da página precisa constar em `CORS_ORIGINS` na aplicação Rails —
+`https://eventos.rubyrosemaquiagem.com.br` já consta.
 
-- o buscador não indexa a página de manutenção no lugar do site;
-- o `script.js` usa o status para saber se o site voltou. Com 200 na raiz ele
-  concluiria que já voltou e recarregaria em cima de si mesmo, sem parar.
+O `localhost` **não** consta, e é por isso que ao abrir a página local o campo
+de data mostra "Datas indisponíveis" com um erro de rede. Em produção funciona.
 
-Os arquivos da própria página (`styles.css`, `script.js`, `assets/`) continuam
-respondendo 200.
+## Indexação
 
-O `beauty-fair-example.html` também, num `location` próprio no `nginx.conf`.
-Como enquanto a manutenção está de pé ela é a única página do domínio que
-responde 200, o Nginx devolve `X-Robots-Tag: noindex, nofollow` junto — senão
-ela viraria a candidata natural do buscador para representar o site inteiro.
+O `index.html` ainda traz `<meta name="robots" content="noindex, nofollow">`, de
+quando ele era uma página de aprovação. Agora que é a raiz do site, é essa linha
+que decide se o Google indexa a página — retire-a quando quiser que ele indexe.
 
 ## Identidade visual
 
 As cores e fontes saem de `app/assets/stylesheets/_brand.scss`, no repositório
-`rubyrose_eventos`, transcritas para custom properties no topo do `styles.css`
-porque esta página é estática e não passa pelo Sass. Se a marca mudar lá, é no
-`:root` que ela muda aqui.
+`rubyrose_eventos`. Estão transcritas para custom properties no `:root` de cada
+arquivo, porque estas páginas são estáticas e não passam pelo Sass.
+
+O rosa diverge entre as duas de propósito: a manutenção usa o `#f03a77` do
+manual e a Beauty Fair usa o `#e95374`, que é o do widget de credenciamento
+exibido dentro dela.
