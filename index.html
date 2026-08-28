@@ -436,7 +436,22 @@
 
         /* Folga generosa antes do primeiro campo: é ela que faz o título ler
          * como abertura da seção, e não como rótulo do campo logo abaixo. */
+        margin-bottom: 1.25rem;
+      }
+
+      /* O aviso de inscrições encerradas.
+       *
+       * Marcado com o rosa da marca na borda esquerda, e não com vermelho: não
+       * é erro nem alerta, é o estado normal do evento agora. Vermelho faria
+       * parecer que algo deu errado com quem está lendo. */
+      .signup__notice {
+        max-width: 46rem;
         margin-bottom: 2.5rem;
+        padding: 1rem 1.25rem;
+        border-left: 4px solid var(--rr-pink);
+        border-radius: 0 var(--rr-radius) var(--rr-radius) 0;
+        background: var(--rr-canvas);
+        color: var(--rr-ink);
       }
 
       /* Formulário à esquerda, banner à direita. Empilhado por padrão: no
@@ -970,6 +985,31 @@
         }
       }
 
+      /* Aparência dos campos com as inscrições encerradas.
+       *
+       * O widget nunca previu ficar desativado por tempo indeterminado: o
+       * `disabled` dele existe para o instante em que o envio está em curso, e
+       * é por isso que o botão vem com `cursor: progress`, que quer dizer
+       * "trabalhando". Aqui não há nada em curso, e a seta de espera sugeriria
+       * que basta aguardar. `not-allowed` diz o que é: não vai acontecer.
+       *
+       * O fundo levemente acinzentado nos campos é o que os afasta de um
+       * formulário em branco esperando ser preenchido. */
+      #rr-accreditation .rr-submit[disabled] {
+        cursor: not-allowed;
+      }
+
+      #rr-accreditation .rr-input:disabled,
+      #rr-accreditation .rr-select:disabled {
+        background: var(--rr-canvas);
+        color: var(--rr-muted);
+        cursor: not-allowed;
+      }
+
+      #rr-accreditation .rr-label {
+        color: var(--rr-muted);
+      }
+
     </style>
 
   </head>
@@ -1107,16 +1147,43 @@
 
       <section class="signup" id="inscricao" aria-labelledby="inscricao-titulo">
 
-        <h2 class="signup__title" id="inscricao-titulo">Preencha o formulário</h2>
+        <h2 class="signup__title" id="inscricao-titulo">Inscrições encerradas</h2>
+
+        <!-- O aviso vem antes do formulário de propósito: um formulário
+             desativado sem explicação parece defeito, e quem chega pensa que a
+             página quebrou em vez de entender que as vagas acabaram. -->
+        <p class="signup__notice">
+          As vagas do credenciamento se esgotaram e não estamos mais recebendo
+          cadastros. O formulário abaixo continua visível apenas para consulta.
+        </p>
 
         <div class="signup__grid">
 
         <div class="signup__form">
 
         <div id="rr-accreditation-wrap">
-        <div id="rr-accreditation">
+        <!-- Inscrições encerradas.
+             ---------------------------------------------------------------
+
+             O `data-rr-mounted="true"` é a chave disto tudo, e é do próprio
+             widget: a primeira coisa que o script dele faz é sair calado se
+             encontrar essa marca, para não montar duas vezes na mesma página.
+             Posta aqui de saída, ele nunca chega a rodar — não busca as datas
+             na API, não instala as máscaras e não escuta o envio. Nada do JS
+             precisou ser alterado para isso.
+
+             Para reabrir as inscrições: tire este atributo, o `disabled` do
+             <fieldset> e o do botão, devolva o texto original do botão e da
+             opção do select, e apague o aviso logo acima do formulário. -->
+
+        <div id="rr-accreditation" data-rr-mounted="true">
           <form class="rr-form" novalidate>
-            <fieldset class="rr-fieldset">
+
+            <!-- `disabled` no <fieldset>, e não campo a campo: pela regra do
+                 HTML tudo que está dentro de um fieldset desativado fica
+                 desativado junto, mesmo que algo tente reativar um campo pelo
+                 JavaScript. É uma trava que não depende de vigilância. -->
+            <fieldset class="rr-fieldset" disabled>
               <div class="rr-field">
                 <label class="rr-label" for="rr-name">Nome completo</label>
                 <input class="rr-input" id="rr-name" name="name" type="text" autocomplete="name">
@@ -1159,14 +1226,16 @@
               <div class="rr-field">
                 <label class="rr-label" for="rr-attends_on">Dia que você vai ao evento</label>
                 <select class="rr-select" id="rr-attends_on" name="attends_on" disabled>
-                  <option value="">Carregando as datas…</option>
+                  <option value="">Inscrições encerradas</option>
                 </select>
                 <span class="rr-hint">A credencial vale apenas no dia escolhido.</span>
                 <span class="rr-error" data-error="attends_on" role="alert"></span>
               </div>
             </fieldset>
 
-            <button class="rr-submit" type="submit">Credenciar</button>
+            <!-- O botão fica fora do <fieldset>, então precisa do `disabled`
+                 próprio — o do fieldset não o alcança. -->
+            <button class="rr-submit" type="submit" disabled>Inscrições encerradas</button>
           </form>
 
           <div class="rr-feedback" aria-live="polite"></div>
