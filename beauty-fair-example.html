@@ -99,6 +99,18 @@
         src: url("assets/fonts/montserrat-latin-600-normal.woff2") format("woff2");
       }
 
+      /* O 700 é o que faz os títulos saírem realmente em bold. Sem este
+       * arquivo o navegador não desiste do `font-weight: 700` — ele resolve
+       * para o peso mais próximo que tem, que era o 600, e o título ficava
+       * quase igual ao texto ao lado. */
+      @font-face {
+        font-family: "Montserrat";
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url("assets/fonts/montserrat-latin-700-normal.woff2") format("woff2");
+      }
+
       @font-face {
         font-family: "Rubik";
         font-style: normal;
@@ -128,11 +140,15 @@
         background: var(--rr-surface);
         color: var(--rr-ink);
         font-family: var(--rr-font-text);
-        font-size: 0.875rem;
+
+        /* 16px — o mesmo corpo que o formulário usa. Antes a página estava em
+         * 14 e o formulário em 16, e a diferença aparecia no ponto em que os
+         * dois se encostam. */
+        font-size: 1rem;
 
         /* Montserrat tem desenho mais largo que a Helvetica que a maioria dos
-         * resets assume, e no corpo pequeno isso aperta a entrelinha. */
-        line-height: 1.55;
+         * resets assume, e isso aperta a entrelinha. */
+        line-height: 1.6;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
       }
@@ -197,9 +213,13 @@
         height: 2.75rem;
       }
 
-      .topbar__bag svg {
+      /* O PNG já vem branco com fundo transparente, então vai direto sobre o
+       * rosa — ao contrário do logotipo ao lado, que só existe em rosa e
+       * precisa do filtro para aparecer aqui. */
+      .topbar__bag img {
+        display: block;
         width: 1.75rem;
-        height: 1.75rem;
+        height: auto;
       }
 
       /* ------------------------------------------------------------------
@@ -264,12 +284,15 @@
       /* O título da página e os rótulos das seções são a mesma coisa
        * visualmente, e é o rosa que os marca. A diferença entre eles é só
        * hierárquica — h1 e h2 —, e é o leitor de tela que a usa. */
+      /* Um degrau acima do texto: 18px contra os 16px do corpo, em bold. É
+       * pouco de propósito — o suficiente para o olho separar título de
+       * parágrafo, sem transformar cada rótulo numa manchete. */
       .info__title,
       .info__subtitle {
         color: var(--rr-pink);
         font-family: var(--rr-font-text);
         font-weight: 700;
-        font-size: 0.875rem;
+        font-size: 1.125rem;
         line-height: 1.4;
         letter-spacing: normal;
       }
@@ -300,25 +323,24 @@
         padding: 0 clamp(1.25rem, 5vw, 3rem);
       }
 
+      /* Este abre uma seção inteira, e não um parágrafo: fica um degrau acima
+       * dos títulos da .info — 20px contra 18px — para a hierarquia da página
+       * ler de cima para baixo. */
       .signup__title {
         color: var(--rr-pink);
         font-family: var(--rr-font-text);
         font-weight: 700;
-        font-size: 0.875rem;
-        line-height: 1.4;
+        font-size: 1.25rem;
+        line-height: 1.3;
         letter-spacing: normal;
-        margin-bottom: 1rem;
+        margin-bottom: 1.25rem;
       }
 
       /* Formulário à esquerda, banner à direita. Empilhado por padrão: no
-       * celular quem manda é o formulário, e o banner desce ou some. */
+       * celular quem manda é o formulário, e o banner some. */
       .signup__grid {
         display: grid;
         gap: clamp(1.5rem, 4vw, 3rem);
-
-        /* Os dois começam colados no topo. Sem isto o grid estica a coluna do
-         * banner até a altura do formulário e a imagem desliza para o meio. */
-        align-items: start;
       }
 
       /* O banner é peça de desktop, como pedido. Abaixo dos 60rem ele fica em
@@ -329,100 +351,93 @@
       }
 
       @media (min-width: 60rem) {
+        /* Duas colunas iguais, com o mesmo gap da .info logo acima. É isso que
+         * põe a borda esquerda do banner exatamente sobre a borda esquerda da
+         * coluna "Local:" — as duas seções passam a dividir a página no mesmo
+         * ponto, em vez de cada uma no seu. */
         .signup__grid {
-          /* O minmax(0, …) na primeira coluna não é firula: sem ele a coluna
-           * assume o tamanho mínimo do conteúdo e o formulário se recusa a
-           * encolher quando a janela aperta. */
-          grid-template-columns: minmax(0, 34rem) minmax(0, 1fr);
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+
+          /* `stretch` (o padrão) é o que iguala as alturas: a linha do grid
+           * fica com a altura do formulário, que é o mais alto, e a coluna do
+           * banner acompanha. */
+          align-items: stretch;
         }
 
+        /* Flex para que a imagem possa esticar até a altura da coluna. Como
+         * bloco simples ela pararia na própria altura natural. */
         .signup__aside {
-          display: block;
+          display: flex;
         }
       }
 
       .signup__banner {
         display: block;
         width: 100%;
-        height: auto;
         border-radius: var(--rr-radius);
 
-        /* O teto é por causa do formato: a peça é bem mais alta que larga, e
-         * sem limite ela cresce junto com a coluna até passar do dobro da
-         * altura do formulário em telas grandes — o apoio ficaria maior que o
-         * assunto. Nesta medida ela termina perto do último campo. */
-        max-width: 36rem;
-        margin-inline: auto;
-      }
-
-      /* ------------------------------------------------------------------
-         Instagram
-         ------------------------------------------------------------------ */
-
-      .instagram {
-        padding: clamp(2rem, 5vw, 3rem) 1.25rem;
-        background: var(--rr-pink);
-        text-align: center;
-      }
-
-      .instagram__link {
-        color: var(--rr-surface);
-        font-family: var(--rr-font-display);
-        font-weight: 700;
-        font-size: clamp(1.75rem, 6vw, 2.75rem);
-        letter-spacing: 0.01em;
-        text-decoration: none;
+        /* A peça é mais alta que larga, mas nunca o bastante para alcançar o pé
+         * do formulário nesta largura de coluna. O `cover` fecha a diferença
+         * esticando a imagem até a altura da linha e aparando o excedente pelas
+         * pontas — que na arte é o rosa chapado de cima e de baixo, não o
+         * texto, que fica no meio.
+         *
+         * Se um dia a sobra encostar no conteúdo da peça, `contain` no lugar de
+         * `cover` devolve a imagem inteira e desiste de igualar as alturas. */
+        height: 100%;
+        min-height: 0;
+        object-fit: cover;
+        object-position: center;
       }
 
       /* ------------------------------------------------------------------
          Rodapé
          ------------------------------------------------------------------ */
 
+      /* A faixa do Instagram que existia entre o formulário e o rodapé saiu, e
+       * com ela o filete branco que havia aqui: ele marcava a divisa entre as
+       * duas áreas rosa e, sem a de cima, separava o rodapé do branco da
+       * página — uma linha branca sobre fundo branco. */
       .sitefooter {
         padding: clamp(2rem, 5vw, 3rem) clamp(1.25rem, 5vw, 3rem);
         background: var(--rr-pink);
         color: var(--rr-surface);
-
-        /* Faixa própria, mas mesma cor da anterior: a linha é o que diz onde o
-         * Instagram termina e o rodapé começa. */
-        border-top: 1px solid rgba(255, 255, 255, 0.28);
       }
 
-      .sitefooter__grid {
+      /* Duas metades e um filete entre elas: as redes de um lado, a assinatura
+       * do outro. Empilhado por padrão, lado a lado a partir de 48rem — no
+       * celular as metades ficariam estreitas demais para valer o corte. */
+      .sitefooter__inner {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-        gap: 2rem;
+        gap: 1.75rem;
         max-width: var(--rr-content);
         margin: 0 auto;
       }
 
+      @media (min-width: 48rem) {
+        .sitefooter__inner {
+          grid-template-columns: 1fr 1fr;
+
+          /* `stretch`, e não `center`: é o que dá altura à coluna da direita
+           * para o filete dela poder correr de cima a baixo. Centrado, cada
+           * coluna encolheria até o próprio conteúdo e a linha viraria um
+           * traço curto ao lado do logotipo. */
+          align-items: stretch;
+          gap: 0;
+        }
+      }
+
+      /* Acompanha a escala do resto da página: 16px, o mesmo do corpo. Em 12px
+       * ele ficava menor que qualquer texto da página e não parecia mais um
+       * título. A caixa alta e o tracking é que o mantêm como rótulo, e não
+       * como manchete — não o tamanho miúdo. */
       .sitefooter__title {
         font-family: var(--rr-font-text);
         font-weight: 700;
-        font-size: 0.75rem;
+        font-size: 1rem;
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        margin-bottom: 0.75rem;
-      }
-
-      .sitefooter__col li {
-        margin-bottom: 0.25rem;
-      }
-
-      .sitefooter__col a {
-        font-size: 0.8125rem;
-
-        /* Os links do rodapé são brancos sobre rosa e ficariam gritando no
-         * mesmo peso do título. Recuar a opacidade é o que os coloca abaixo
-         * dele na hierarquia sem introduzir uma segunda cor. */
-        opacity: 0.85;
-        text-decoration: none;
-      }
-
-      .sitefooter__col a:hover,
-      .sitefooter__col a:focus-visible {
-        opacity: 1;
-        text-decoration: underline;
+        margin-bottom: 0.875rem;
       }
 
       .sitefooter__social {
@@ -434,10 +449,7 @@
         list-style: none;
       }
 
-      /* Precisa do .sitefooter__col na frente para vencer a regra dos links de
-       * texto acima, que é mais específica e deixaria os ícones apagados em
-       * 85% de opacidade. */
-      .sitefooter__col .sitefooter__social a {
+      .sitefooter__social a {
         display: grid;
         place-items: center;
         width: 2.25rem;
@@ -445,13 +457,11 @@
         border-radius: 50%;
         background: var(--rr-surface);
         color: var(--rr-pink);
-        opacity: 1;
       }
 
-      .sitefooter__col .sitefooter__social a:hover,
-      .sitefooter__col .sitefooter__social a:focus-visible {
+      .sitefooter__social a:hover,
+      .sitefooter__social a:focus-visible {
         color: var(--rr-pink-ink);
-        text-decoration: none;
       }
 
       .sitefooter__social svg {
@@ -460,11 +470,26 @@
         fill: currentColor;
       }
 
-      .sitefooter__seal {
+      .sitefooter__brand {
+        display: flex;
+        align-items: center;
+      }
+
+      @media (min-width: 48rem) {
+        .sitefooter__brand {
+          justify-content: flex-end;
+          border-left: 1px solid rgba(255, 255, 255, 0.45);
+          padding-left: clamp(1.5rem, 4vw, 3rem);
+        }
+      }
+
+      /* Mesmo caso do topo: o SVG da marca só existe em rosa, e sobre o rosa
+       * ele sumiria. */
+      .sitefooter__brand img {
         display: block;
-        width: 4.5rem;
+        width: clamp(9rem, 16vw, 13rem);
         height: auto;
-        margin-top: 1.25rem;
+        filter: brightness(0) invert(1);
       }
 
     </style>
@@ -811,11 +836,11 @@
         <img src="assets/ruby-rose-logo.svg" alt="Ruby Rose" width="1103" height="237">
       </a>
 
-      <a class="topbar__bag" href="#" aria-label="Sacola de compras">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <path d="M4.5 7.5h15v13.5h-15z" stroke-linejoin="round"></path>
-          <path d="M8.75 10.5V6.75a3.25 3.25 0 0 1 6.5 0V10.5" stroke-linecap="round"></path>
-        </svg>
+      <a class="topbar__bag" href="https://www.rubyrosemaquiagem.com.br/" rel="noopener" aria-label="Loja Ruby Rose">
+        <!-- O ícone é o arquivo da marca, não um desenho aproximado. Sem alt:
+             o rótulo do link já está no aria-label do <a>, e repetir aqui faria
+             o leitor de tela anunciar a mesma coisa duas vezes. -->
+        <img src="assets/bag.png" alt="" width="663" height="632">
       </a>
 
     </header>
@@ -912,7 +937,7 @@
 
       <section class="signup" id="inscricao" aria-labelledby="inscricao-titulo">
 
-        <h2 class="signup__title" id="inscricao-titulo">Inscrição gratuita</h2>
+        <h2 class="signup__title" id="inscricao-titulo">Preencha o formulário</h2>
 
         <div class="signup__grid">
 
@@ -998,59 +1023,14 @@
     </main>
 
     <!-- ------------------------------------------------------------------
-         Instagram
-         ------------------------------------------------------------------ -->
-
-    <section class="instagram">
-      <a class="instagram__link" href="https://www.instagram.com/rubyrosemaquiagem/" rel="noopener">Instagram</a>
-    </section>
-
-    <!-- ------------------------------------------------------------------
          Rodapé
          ------------------------------------------------------------------ -->
 
     <footer class="sitefooter">
 
-      <div class="sitefooter__grid">
+      <div class="sitefooter__inner">
 
-        <nav class="sitefooter__col" aria-labelledby="rodape-sobre">
-          <h2 class="sitefooter__title" id="rodape-sobre">Sobre nós</h2>
-          <ul class="plain">
-            <li><a href="#">Trabalhe na Ruby Rose</a></li>
-            <li><a href="#">Quem Somos</a></li>
-            <li><a href="#">Fale Conosco</a></li>
-            <li><a href="#">Contato</a></li>
-          </ul>
-
-          <!-- O selo RA 1000 aparece na prévia, sob esta coluna. O arquivo
-               ainda não está em assets/; assim que estiver, é só descomentar.
-               <img class="sitefooter__seal" src="assets/selo-ra1000.png"
-                    alt="Selo RA 1000 do Reclame Aqui" width="200" height="120"> -->
-        </nav>
-
-        <nav class="sitefooter__col" aria-labelledby="rodape-categorias">
-          <h2 class="sitefooter__title" id="rodape-categorias">Categorias</h2>
-          <ul class="plain">
-            <li><a href="#">Lançamento</a></li>
-            <li><a href="#">Rosto</a></li>
-            <li><a href="#">Sobrancelhas</a></li>
-            <li><a href="#">Olhos</a></li>
-            <li><a href="#">Lábios</a></li>
-            <li><a href="#">Skincare</a></li>
-            <li><a href="#">Perfumaria</a></li>
-          </ul>
-        </nav>
-
-        <nav class="sitefooter__col" aria-labelledby="rodape-conta">
-          <h2 class="sitefooter__title" id="rodape-conta">Minha conta</h2>
-          <ul class="plain">
-            <li><a href="#">Dados Pessoais</a></li>
-            <li><a href="#">Meus Pedidos</a></li>
-            <li><a href="#">Alterar Cadastro</a></li>
-          </ul>
-        </nav>
-
-        <nav class="sitefooter__col" aria-labelledby="rodape-redes">
+        <nav aria-labelledby="rodape-redes">
           <h2 class="sitefooter__title" id="rodape-redes">Siga nossas redes</h2>
 
           <!-- Círculos brancos com o símbolo da rede, como na prévia. Os
@@ -1059,27 +1039,31 @@
                hover, sem quatro requisições a mais. -->
           <ul class="sitefooter__social">
             <li>
-              <a href="https://www.instagram.com/rubyrosemaquiagem/" rel="noopener" aria-label="Instagram">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 1.8.25 2.2.42.6.22 1 .48 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c0 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2 0-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2-.1-1.3-.1-1.7-.1-4.9s0-3.6.1-4.9c0-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4 1.3-.07 1.7-.07 4.9-.07zm0 3.1A6.7 6.7 0 1 0 18.7 12 6.7 6.7 0 0 0 12 5.3zm0 11A4.3 4.3 0 1 1 16.3 12 4.3 4.3 0 0 1 12 16.3zm6.9-11.2a1.6 1.6 0 1 1-1.6-1.6 1.6 1.6 0 0 1 1.6 1.6z"/></svg>
-              </a>
-            </li>
-            <li>
-              <a href="#" aria-label="Facebook">
+              <a href="https://www.facebook.com/rubyrosebrasil/" rel="noopener" aria-label="Facebook">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z"/></svg>
               </a>
             </li>
             <li>
-              <a href="#" aria-label="TikTok">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.8a4.3 4.3 0 0 1-1-2.8h-3.1v12.3a2.6 2.6 0 1 1-1.8-2.5V9.6a5.7 5.7 0 1 0 4.9 5.7V9.7a7.3 7.3 0 0 0 4.3 1.4V8a4.3 4.3 0 0 1-3.3-2.2z"/></svg>
+              <a href="https://www.instagram.com/rubyrosebrasil/" rel="noopener" aria-label="Instagram">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 1.8.25 2.2.42.6.22 1 .48 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c0 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2 0-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2-.1-1.3-.1-1.7-.1-4.9s0-3.6.1-4.9c0-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4 1.3-.07 1.7-.07 4.9-.07zm0 3.1A6.7 6.7 0 1 0 18.7 12 6.7 6.7 0 0 0 12 5.3zm0 11A4.3 4.3 0 1 1 16.3 12 4.3 4.3 0 0 1 12 16.3zm6.9-11.2a1.6 1.6 0 1 1-1.6-1.6 1.6 1.6 0 0 1 1.6 1.6z"/></svg>
               </a>
             </li>
             <li>
-              <a href="#" aria-label="YouTube">
+              <a href="https://www.youtube.com/channel/UCayFqs933CpZtCHtTSiB2SA" rel="noopener" aria-label="YouTube">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4a2.5 2.5 0 0 0-1.8 1.8A26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5.2 3z"/></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.tiktok.com/@rubyrose_brasil" rel="noopener" aria-label="TikTok">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.8a4.3 4.3 0 0 1-1-2.8h-3.1v12.3a2.6 2.6 0 1 1-1.8-2.5V9.6a5.7 5.7 0 1 0 4.9 5.7V9.7a7.3 7.3 0 0 0 4.3 1.4V8a4.3 4.3 0 0 1-3.3-2.2z"/></svg>
               </a>
             </li>
           </ul>
         </nav>
+
+        <div class="sitefooter__brand">
+          <img src="assets/ruby-rose-logo.svg" alt="Ruby Rose" width="1103" height="237">
+        </div>
 
       </div>
 
