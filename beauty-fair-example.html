@@ -478,22 +478,30 @@
 
       .signup__banner {
         display: block;
-        width: 100%;
+
+        /* 80% da coluna, e não os 100% de antes. Como o `contain` logo abaixo
+         * encaixa a arte pela largura, estreitar a caixa é o mesmo que reduzir
+         * a peça: ela sai a 80% do tamanho anterior.
+         *
+         * A sobra fica toda à direita, de propósito — é a borda esquerda que
+         * precisa continuar caindo sobre a coluna "Local:" lá em cima. */
+        width: 80%;
         border-radius: var(--rr-radius);
 
-        /* A peça acompanha a altura do formulário, do primeiro campo ao botão.
+        /* A coluna continua com a altura do formulário, do primeiro campo ao
+         * botão. O que muda é como a arte ocupa essa coluna.
          *
-         * Nenhuma imagem cabe numa caixa de proporção diferente da sua sem
-         * ceder em algo, e aqui a escolha é ceder na borda: o `cover` preenche
-         * a caixa inteira e apara o excedente. Como a caixa é mais estreita que
-         * a arte nessa altura, o que sai são as laterais — onde há a trama de
-         * "RubyRose melu", não o cartão rosa com o texto, que fica no meio.
+         * Com `cover` ela preenchia tudo, e para isso era ampliada cerca de
+         * 18% — o cartão rosa crescia até quase encostar nas bordas e a trama
+         * de "RubyRose melu" em volta era aparada. `contain` desiste de
+         * preencher: a arte entra inteira, no tamanho natural para a largura da
+         * coluna, e é isso que a deixa menor.
          *
-         * Quanto mais larga a coluna, menos se apara: perto de 700px de largura
-         * o corte praticamente desaparece. */
+         * A sobra que aparece em cima e embaixo é a diferença entre as duas
+         * proporções, e fica dividida igualmente pelo `center`. */
         height: 100%;
         min-height: 0;
-        object-fit: cover;
+        object-fit: contain;
         object-position: center;
       }
 
@@ -1155,8 +1163,7 @@
              dito no texto acima. -->
         <aside class="signup__aside">
           <img class="signup__banner" src="assets/banner-formulario.png"
-               alt="Vem para a Beauty Fair 2026. Faça seu credenciamento e retire seu kit exclusivo no estande. 1 kit por CPF, sujeito à disponibilidade. Ruby Rose e Melu."
-               width="2251" height="3540">
+               alt="Vem para a Beauty Fair 2026. Faça seu credenciamento e retire seu kit exclusivo no estande. 1 kit por CPF, sujeito à disponibilidade. Ruby Rose e Melu.">
         </aside>
 
         </div>
