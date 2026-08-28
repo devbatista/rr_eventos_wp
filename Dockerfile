@@ -32,6 +32,7 @@ RUN apk add --no-cache \
   && mkdir -p /run/nginx /var/log/supervisor
 
 COPY docker/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
+COPY docker/php-fpm/zz-www-pool.conf /usr/local/etc/php-fpm.d/zz-www-pool.conf
 COPY nginx/ /etc/nginx/
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY docker/entrypoint.sh /usr/local/bin/docker-entrypoint
