@@ -332,13 +332,12 @@
         padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.25rem, 5vw, 3rem);
       }
 
-      /* A imagem fica no tamanho em que foi exportada — 1280×650 — em vez de
-       * esticar até a largura da janela. Ampliar um PNG acima do tamanho de
-       * origem não inventa detalhe nenhum: só borra o texto que está pintado
-       * dentro dele.
-       *
-       * O `max-width` é o único desvio disso, e só para baixo: numa janela mais
-       * estreita que 1280 a imagem encolhe em vez de furar a página. */
+      /* As três artes são bem maiores que qualquer tela — a de desktop tem
+       * 8001px de largura —, então na prática a imagem sempre encosta no
+       * `max-width` e ocupa a largura disponível. O `width: auto` continua
+       * valendo como regra: se um dia entrar aqui uma arte menor que a coluna,
+       * ela para no tamanho em que foi exportada em vez de ser ampliada, que é
+       * o que borraria o texto pintado dentro dela. */
       .hero__image {
         display: block;
         width: auto;
@@ -1002,10 +1001,30 @@
            Banner
            -------------------------------------------------------------- -->
 
+      <!-- Três artes para a mesma peça, uma por formato de tela.
+
+           O navegador escolhe antes de baixar qualquer coisa e busca só a que
+           serve — quem abre no celular nunca puxa a versão de desktop. A ordem
+           importa: ele para na primeira <source> cujo `media` combina, então as
+           faixas vão da mais estreita para a mais larga e o <img> no fim é o
+           desktop, que também é o que aparece em navegador antigo que não
+           entenda <picture>.
+
+           O `width`/`height` repetido em cada fonte não é enfeite: as três têm
+           proporções diferentes, e é com esses números que o navegador reserva
+           a altura certa antes de a imagem chegar. Sem eles a página daria um
+           pulo no meio do carregamento. -->
+
       <a class="hero" href="#inscricao">
-        <img class="hero__image" src="assets/banner-topo.png"
-             alt="Viva a experiência Ruby Rose e Melu na Beauty Fair 2026 — lançamentos, ativações, influenciadores e um kit exclusivo esperam por você. Garantir vaga."
-             width="1280" height="650">
+        <picture>
+          <source media="(max-width: 767px)"
+                  srcset="assets/banner-mobile.png" width="4501" height="2292">
+          <source media="(max-width: 1023px)"
+                  srcset="assets/banner-tablet.png" width="5334" height="2709">
+          <img class="hero__image" src="assets/banner-topo.png"
+               alt="Viva a experiência Ruby Rose e Melu na Beauty Fair 2026 — lançamentos, ativações, influenciadores e um kit exclusivo esperam por você. Garantir vaga."
+               width="8001" height="2709">
+        </picture>
       </a>
 
       <!-- --------------------------------------------------------------
