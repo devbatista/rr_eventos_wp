@@ -9,13 +9,24 @@ histórico do Git ainda o tem, se algum dia precisar.
 ## Arquivos
 
 ```txt
-index.html          o conteúdo
-styles.css          identidade visual da Ruby Rose
-script.js           verifica sozinho se o site voltou e recarrega
-assets/             logotipo, favicon e as fontes da marca
-Dockerfile          Nginx servindo o diretório
-nginx.conf.template configuração — a porta vem do ambiente
+index.html   o conteúdo
+styles.css   identidade visual da Ruby Rose
+script.js    verifica sozinho se o site voltou e recarrega
+assets/      logotipo, favicon e as fontes da marca
+Dockerfile   Nginx servindo o diretório
+nginx.conf   configuração do Nginx
 ```
+
+## IPv6
+
+O `nginx.conf` tem `listen 80` **e** `listen [::]:80`. A segunda linha não é
+enfeite: o Railway alcança o container por IPv6, e sem ela o container sobe, o
+serviço aparece "Online" e todo domínio devolve 502 com `x-railway-fallback`.
+
+Por isso também a configuração é copiada direto para `conf.d/`, e não para
+`templates/`. O script `10-listen-on-ipv6-by-default.sh` da imagem roda *antes*
+do `20-envsubst-on-templates.sh`: um template sobrescreveria o arquivo que ele
+acabou de corrigir, que foi exatamente como esse 502 apareceu.
 
 ## Ver local
 
