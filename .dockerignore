@@ -1,4 +1,6 @@
 .git
+.gitignore
 .DS_Store
-mysql_data
-wordpress
+README.md
+Dockerfile
+.dockerignore

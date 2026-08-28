@@ -1,0 +1,47 @@
+# Configuração da página de manutenção.
+#
+# Passa por `envsubst` na subida do container: `${PORT}` é substituído, e só ele
+# — o script da imagem oficial só troca nomes que existem no ambiente, e não há
+# variável chamada `uri`, então `$uri` chega ao Nginx intacto.
+
+server {
+    listen ${PORT};
+    server_name _;
+
+    root /usr/share/nginx/html;
+
+    # Os arquivos da própria página respondem 200. Se caíssem no 503 junto com o
+    # resto, o navegador ainda os aplicaria, mas o `fetch` do script passaria a
+    # medir a coisa errada — e a fonte e o CSS viriam com um status que nenhum
+    # cache intermediário guarda direito.
+    location = /styles.css { try_files $uri =404; }
+    location = /script.js  { try_files $uri =404; }
+
+    location /assets/ {
+        try_files $uri =404;
+        expires 30d;
+        access_log off;
+    }
+
+    # Todo o resto é manutenção, inclusive a raiz.
+    #
+    # O 503 não é detalhe: é ele que diz ao buscador para não indexar esta
+    # página no lugar do site, e é ele que o `fetch` do script lê para saber que
+    # ainda não voltou. Com 200 aqui o script concluiria que o site subiu e
+    # recarregaria em cima de si mesmo, sem parar.
+    location / {
+        return 503;
+    }
+
+    # O corpo do 503 sai de um caminho interno próprio, e não de `/index.html`.
+    # Apontar o `error_page` para o próprio /index.html cairia de volta no
+    # `location /` acima, que devolve 503 outra vez: o Nginx detecta o ciclo e
+    # responde 500 no lugar da página.
+    error_page 503 @manutencao;
+
+    location @manutencao {
+        try_files /index.html =404;
+        add_header Retry-After 600 always;
+        add_header Cache-Control "no-store" always;
+    }
+}

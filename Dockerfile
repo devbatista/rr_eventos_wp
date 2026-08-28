@@ -1,48 +1,15 @@
-FROM php:8.2-fpm-alpine
+# Serve a página de manutenção e nada mais.
+#
+# A imagem oficial do Nginx roda `envsubst` sobre /etc/nginx/templates/*.template
+# na subida e escreve o resultado em /etc/nginx/conf.d. É por ali que a porta do
+# Railway entra na configuração — ele injeta PORT e espera que o processo escute
+# nela, e um `listen 80` fixo faria o healthcheck falhar.
+FROM nginx:1.27-alpine
 
-RUN apk add --no-cache \
-    bash \
-    curl \
-    icu-dev \
-    libjpeg-turbo-dev \
-    libpng-dev \
-    libwebp-dev \
-    libzip-dev \
-    nginx \
-    oniguruma-dev \
-    supervisor \
-    unzip \
-    zip \
-  && docker-php-ext-configure gd --with-jpeg --with-webp \
-  && docker-php-ext-install -j"$(nproc)" \
-    exif \
-    gd \
-    intl \
-    mysqli \
-    opcache \
-    pdo_mysql \
-    zip \
-  && mkdir -p /usr/src/wordpress \
-  && curl -fsSL https://wordpress.org/latest.tar.gz -o /tmp/wordpress.tar.gz \
-  && tar -xzf /tmp/wordpress.tar.gz -C /tmp \
-  && cp -R /tmp/wordpress/. /usr/src/wordpress/ \
-  && cp -R /usr/src/wordpress/. /var/www/html/ \
-  && rm -rf /tmp/wordpress /tmp/wordpress.tar.gz \
-  && chown -R www-data:www-data /usr/src/wordpress /var/www/html \
-  && mkdir -p /run/nginx /var/log/supervisor
+# Vale para rodar local, onde ninguém define PORT. No Railway a variável do
+# ambiente sobrescreve esta.
+ENV PORT=80
 
-COPY docker/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
-COPY docker/php-fpm/zz-www-pool.conf /usr/local/etc/php-fpm.d/zz-www-pool.conf
-COPY nginx/ /etc/nginx/
-COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY docker/entrypoint.sh /usr/local/bin/docker-entrypoint
-
-RUN cp /etc/nginx/default.conf /etc/nginx/http.d/default.conf \
-  && chmod +x /usr/local/bin/docker-entrypoint
-
-WORKDIR /var/www/html/
-
-EXPOSE 80
-
-ENTRYPOINT ["docker-entrypoint"]
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY index.html styles.css script.js /usr/share/nginx/html/
+COPY assets/ /usr/share/nginx/html/assets/

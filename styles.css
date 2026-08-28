@@ -1,0 +1,233 @@
+/* Página de manutenção da Ruby Rose Eventos.
+ *
+ * Os tokens abaixo são os mesmos de app/assets/stylesheets/_brand.scss no
+ * rubyrose_eventos, transcritos para custom properties porque esta página é
+ * HTML estático e não passa pelo pipeline de Sass. Se a marca mudar lá, é aqui
+ * que ela muda aqui — nenhum hex deve aparecer fora deste bloco. */
+
+:root {
+  /* Paleta institucional */
+  --rr-pink: #f03a77;          /* Pantone 184 C — a cor da marca */
+  --rr-pink-ink: #cc3165;      /* mesmo rosa 15% mais escuro: 5,0:1, serve texto */
+  --rr-wine: #842046;          /* Pantone 7641 C */
+
+  /* Neutros */
+  --rr-ink: #2b2228;
+  --rr-surface: #ffffff;
+  --rr-canvas: #faf6f7;
+  --rr-line: #ece2e6;
+  --rr-muted: #6b5e64;
+
+  /* Tipografia */
+  --rr-font-display: "Rubik", system-ui, sans-serif;
+  --rr-font-text: "Montserrat", system-ui, sans-serif;
+
+  /* O manual usa retângulo de canto vivo como forma da marca. */
+  --rr-radius: 0.375rem;
+  --rr-radius-lg: 0.5rem;
+}
+
+/* Fontes servidas pela própria página, nunca por CDN — mesma decisão do
+ * rubyrose_eventos. Só os pesos usados e só o subset latino. */
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/montserrat-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/montserrat-latin-500-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/montserrat-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Rubik";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/rubik-latin-700-normal.woff2") format("woff2");
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+body {
+  background: var(--rr-canvas);
+  color: var(--rr-ink);
+  font-family: var(--rr-font-text);
+
+  /* Montserrat tem desenho mais largo que a Helvetica que a maioria dos resets
+   * assume, e no corpo pequeno isso aperta a entrelinha. */
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2 {
+  font-family: var(--rr-font-display);
+  font-weight: 700;
+
+  /* O manual manda escrever título em sentence case. Garantir no CSS impede
+   * que um hábito de caixa alta desfaça a regra. */
+  text-transform: none;
+  letter-spacing: -0.01em;
+}
+
+/* --------------------------------------------------------------------------
+   Página
+   -------------------------------------------------------------------------- */
+
+/* O rosa da marca só entra como véu no fundo. Em cheio, atrás de um cartão
+ * branco, ele venceria o conteúdo — que é o que a pessoa veio ler. */
+.page {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  padding: 2rem 1.25rem;
+  background:
+    radial-gradient(60rem 34rem at 50% -12%, rgba(240, 58, 119, 0.14), transparent 68%),
+    radial-gradient(46rem 30rem at 92% 108%, rgba(132, 32, 70, 0.10), transparent 70%);
+}
+
+/* A página é o rosado; o cartão é o branco. Sem isso o conteúdo afunda no
+ * fundo em vez de se destacar dele. */
+.card {
+  width: min(100%, 34rem);
+  padding: clamp(1.75rem, 5vw, 3rem);
+  background: var(--rr-surface);
+  border: 1px solid var(--rr-line);
+  border-radius: var(--rr-radius-lg);
+  box-shadow: 0 1.5rem 3rem -1.5rem rgba(43, 34, 40, 0.18);
+  text-align: center;
+}
+
+.card__header {
+  margin-bottom: 1.75rem;
+}
+
+.logo {
+  display: block;
+  width: min(100%, 15rem);
+  height: auto;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Status
+   -------------------------------------------------------------------------- */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3125rem 0.75rem;
+  border: 1px solid var(--rr-line);
+  border-radius: 999px;
+  background: var(--rr-canvas);
+
+  /* Rótulo de estado, não título: caixa alta e tracking aberto separam ele do
+   * texto sem precisar de mais uma cor. */
+  color: var(--rr-muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.status__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--rr-pink);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.45; transform: scale(0.82); }
+}
+
+h1 {
+  margin-top: 1.25rem;
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  line-height: 1.2;
+}
+
+.lead {
+  margin-top: 0.875rem;
+  color: var(--rr-muted);
+  font-size: 0.9375rem;
+}
+
+/* --------------------------------------------------------------------------
+   Endereço
+   -------------------------------------------------------------------------- */
+
+/* O endereço do site, para quem chegou aqui por um link e precisa saber de que
+ * site é a manutenção. Não é link: enquanto a manutenção está de pé ele voltaria
+ * para esta mesma página, e um link que não leva a lugar nenhum frustra mais do
+ * que informa. */
+.address {
+  margin-top: 1.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--rr-line);
+  border-radius: var(--rr-radius);
+  background: var(--rr-canvas);
+  color: var(--rr-pink-ink);
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  /* O endereço é longo e não tem onde quebrar sozinho em tela estreita. Sem
+   * isto ele estoura a largura do cartão no celular. */
+  overflow-wrap: anywhere;
+}
+
+.card__footer {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rr-line);
+  color: var(--rr-muted);
+  font-size: 0.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   Acessibilidade
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,8 +1,1 @@
 .DS_Store
-.env.local
-mysql_data/
-wordpress/
-wp-content/
-.env
-backup-wordpress.sql
-scripts/
