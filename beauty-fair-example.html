@@ -306,6 +306,14 @@
         margin-bottom: 0.5rem;
       }
 
+      /* O recuo acima serve para afastar o subtítulo do parágrafo anterior.
+       * Quando ele abre a coluna — o "Local:" — não há parágrafo nenhum acima,
+       * e o recuo só empurra a coluna da direita para baixo, desalinhando-a do
+       * título da esquerda. */
+      .info__subtitle:first-child {
+        margin-top: 0;
+      }
+
       .info__address {
         margin-top: 0;
       }
@@ -330,10 +338,13 @@
         color: var(--rr-pink);
         font-family: var(--rr-font-text);
         font-weight: 700;
-        font-size: 1.25rem;
+        font-size: 1.5rem;
         line-height: 1.3;
         letter-spacing: normal;
-        margin-bottom: 1.25rem;
+
+        /* Folga generosa antes do primeiro campo: é ela que faz o título ler
+         * como abertura da seção, e não como rótulo do campo logo abaixo. */
+        margin-bottom: 2.5rem;
       }
 
       /* Formulário à esquerda, banner à direita. Empilhado por padrão: no
@@ -404,9 +415,9 @@
         color: var(--rr-surface);
       }
 
-      /* Duas metades e um filete entre elas: as redes de um lado, a assinatura
-       * do outro. Empilhado por padrão, lado a lado a partir de 48rem — no
-       * celular as metades ficariam estreitas demais para valer o corte. */
+      /* Duas metades: as redes de um lado, a assinatura do outro. Empilhado
+       * por padrão, lado a lado a partir de 48rem — no celular as metades
+       * ficariam estreitas demais para valer o corte. */
       .sitefooter__inner {
         display: grid;
         gap: 1.75rem;
@@ -418,11 +429,10 @@
         .sitefooter__inner {
           grid-template-columns: 1fr 1fr;
 
-          /* `stretch`, e não `center`: é o que dá altura à coluna da direita
-           * para o filete dela poder correr de cima a baixo. Centrado, cada
-           * coluna encolheria até o próprio conteúdo e a linha viraria um
-           * traço curto ao lado do logotipo. */
-          align-items: stretch;
+          /* Sem o filete no meio, as colunas não precisam mais ter a mesma
+           * altura — o que interessa agora é o logotipo ficar na linha dos
+           * ícones, e é o `center` que faz isso. */
+          align-items: center;
           gap: 0;
         }
       }
@@ -478,7 +488,9 @@
       @media (min-width: 48rem) {
         .sitefooter__brand {
           justify-content: flex-end;
-          border-left: 1px solid rgba(255, 255, 255, 0.45);
+
+          /* O recuo fica mesmo sem o filete: é ele que impede o logotipo de
+           * encostar nos ícones quando a janela aperta. */
           padding-left: clamp(1.5rem, 4vw, 3rem);
         }
       }
