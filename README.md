@@ -9,13 +9,18 @@ histórico do Git ainda o tem, se algum dia precisar.
 ## Arquivos
 
 ```txt
-index.html   o conteúdo
-styles.css   identidade visual da Ruby Rose
-script.js    verifica sozinho se o site voltou e recarrega
-assets/      logotipo, favicon e as fontes da marca
-Dockerfile   Nginx servindo o diretório
-nginx.conf   configuração do Nginx
+index.html                 o conteúdo
+styles.css                 identidade visual da Ruby Rose
+script.js                  verifica sozinho se o site voltou e recarrega
+beauty-fair-example.html   página da Beauty Fair 2026, para aprovação
+assets/                    logotipo, favicon, fontes e os banners
+Dockerfile                 Nginx servindo o diretório
+nginx.conf                 configuração do Nginx
 ```
+
+O `beauty-fair-example.html` é um arquivo só: o CSS e o JS estão dentro dele,
+inclusive o widget de credenciamento que roda no Elementor. Ele não faz parte
+da manutenção — responde 200 num caminho próprio, ao lado dela.
 
 ## IPv6
 
@@ -42,6 +47,9 @@ Para testar do jeito que vai para o ar, com o 503 e tudo:
 docker build -t rr-manutencao . && docker run --rm -p 8080:80 rr-manutencao
 ```
 
+A manutenção fica em `http://localhost:8080/` e a página da Beauty Fair em
+`http://localhost:8080/beauty-fair-example.html`.
+
 ## O 503
 
 A página responde **503 Service Unavailable**, e não 200. São dois motivos:
@@ -52,6 +60,11 @@ A página responde **503 Service Unavailable**, e não 200. São dois motivos:
 
 Os arquivos da própria página (`styles.css`, `script.js`, `assets/`) continuam
 respondendo 200.
+
+O `beauty-fair-example.html` também, num `location` próprio no `nginx.conf`.
+Como enquanto a manutenção está de pé ela é a única página do domínio que
+responde 200, o Nginx devolve `X-Robots-Tag: noindex, nofollow` junto — senão
+ela viraria a candidata natural do buscador para representar o site inteiro.
 
 ## Identidade visual
 

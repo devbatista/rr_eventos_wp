@@ -232,7 +232,7 @@
         grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
         gap: clamp(1.5rem, 4vw, 3rem);
 
-        max-width: 62rem;
+        max-width: var(--rr-content);
         margin: 0 auto;
         padding: 0 clamp(1.25rem, 5vw, 3rem);
       }
@@ -280,7 +280,7 @@
        * abaixo — aqui é apenas a mesma largura e o mesmo recuo das duas colunas
        * acima, para que os campos nasçam na linha vertical do texto. */
       .signup {
-        max-width: 62rem;
+        max-width: var(--rr-content);
         margin: clamp(2rem, 5vw, 3rem) auto;
         padding: 0 clamp(1.25rem, 5vw, 3rem);
       }
@@ -331,6 +331,13 @@
         width: 100%;
         height: auto;
         border-radius: var(--rr-radius);
+
+        /* O teto é por causa do formato: a peça é bem mais alta que larga, e
+         * sem limite ela cresce junto com a coluna até passar do dobro da
+         * altura do formulário em telas grandes — o apoio ficaria maior que o
+         * assunto. Nesta medida ela termina perto do último campo. */
+        max-width: 36rem;
+        margin-inline: auto;
       }
 
       /* ------------------------------------------------------------------
@@ -370,7 +377,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
         gap: 2rem;
-        max-width: 62rem;
+        max-width: var(--rr-content);
         margin: 0 auto;
       }
 
@@ -804,7 +811,7 @@
            -------------------------------------------------------------- -->
 
       <a class="hero" href="#inscricao">
-        <img class="hero__image" src="assets/banner-topo.jpg"
+        <img class="hero__image" src="assets/banner-topo.png"
              alt="Viva a experiência Ruby Rose e Melu na Beauty Fair 2026 — lançamentos, ativações, influenciadores e um kit exclusivo esperam por você. Garantir vaga."
              width="1920" height="800">
       </a>
@@ -963,7 +970,7 @@
              aria-hidden ficarem de fora: a imagem tem conteúdo, mas ele já foi
              dito no texto acima. -->
         <aside class="signup__aside">
-          <img class="signup__banner" src="assets/banner-formulario.jpg"
+          <img class="signup__banner" src="assets/banner-formulario.png"
                alt="Vem para a Beauty Fair 2026. Faça seu credenciamento e retire seu kit exclusivo no estande. 1 kit por CPF, sujeito à disponibilidade. Ruby Rose e Melu."
                width="2251" height="3540">
         </aside>
